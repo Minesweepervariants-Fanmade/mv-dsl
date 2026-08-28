@@ -5,8 +5,8 @@ from __future__ import annotations
 from .region import NEIGH8, Region
 
 
-class RMoore(Region):
-    id = "moore"
+class Rstd(Region):
+    id = "std"
 
     def cells(self, puzzle, row: int, col: int) -> list[tuple[int, int]]:
         out = []
