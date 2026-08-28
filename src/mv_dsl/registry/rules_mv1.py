@@ -57,3 +57,26 @@ CLUE_RULES: dict[str, ClueRule] = {
     "E": ClueRule("E", REyesight(), WIdentity(), AEyesight(), RelationEquals()),
     "E'": ClueRule("E'", REyesight(), WIdentity(), ASightDiff(), RelationEquals()),
 }
+
+# --- mv1 全局规则（Constraint 子类）---
+# 已实现：Q(Quad)/T(Triplet)/B(Balance)/D(Dual)/U(Unary)/A(AntiKnight)/H(Horizontal)
+# 未实现（连通类）：C(八连通)/O(Outside)/S(Snake)/T'(必三连)/D'(战舰)
+from ..combinators.constraint import (
+    GAntiKnight,
+    GBalance,
+    GDual,
+    GHorizontal,
+    GQuad,
+    GTriplet,
+    GUnary,
+)
+
+CONSTRAINTS: dict[str, object] = {
+    "Q": GQuad(),
+    "T": GTriplet(),
+    "B": GBalance(),
+    "D": GDual(),
+    "U": GUnary(),
+    "A": GAntiKnight(),
+    "H": GHorizontal(),
+}

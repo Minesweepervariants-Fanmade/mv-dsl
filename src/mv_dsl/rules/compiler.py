@@ -10,7 +10,12 @@ from dataclasses import dataclass, field
 
 from ..ir.expr import Cmp, Lin, Model, sum_of
 from ..puzzle.model import Clue, Puzzle
+from ..registry.rules_mv1 import CONSTRAINTS as CONSTRAINTS_MV1
+from ..registry.rules_mv2 import CONSTRAINTS as CONSTRAINTS_MV2
 from .evaluator import UnknownRule, get_rule
+
+# 合并两代全局规则注册表
+CONSTRAINTS: dict[str, object] = {**CONSTRAINTS_MV1, **CONSTRAINTS_MV2}
 
 __all__ = ["compile_puzzle", "CompiledPuzzle", "UnsupportedRule"]
 
@@ -77,13 +82,27 @@ def compile_puzzle(puzzle: Puzzle) -> CompiledPuzzle:
             )
         )
 
+    # 全局规则（Constraint 子类）——按 puzzle.rules 逐条生成
+    for rule_id in puzzle.rules:
+        constraint = CONSTRAINTS.get(rule_id)
+        if constraint is not None:
+            try:
+                model.add(constraint.encode(model, puzzle, mine_vars))
+            except Exception as exc:  # noqa: BLE001
+                skipped.append(f"[{rule_id}] {exc}")
+
     # 逐线索格生成约束
     for r, c, cell in puzzle.iter_cells():
         if cell.clue is None:
             continue
         clue = cell.clue
 
-        if clue.value is not None and not isinstance(clue.value, tuple):
+        if clue.value is None:
+            # mv1 的线索值不在文件中，需先 fill（依赖显示值的规则无法编码）
+            skipped.append(f"[{clue.rule}] 线索值缺失（mv1 需先 fill）")
+            continue
+
+        if not isinstance(clue.value, tuple):
             value_var = model.new_int(f"clue_{r}_{c}", clue.value, clue.value)
         else:
             value_var = model.new_int(f"clue_{r}_{c}", 0, 64)

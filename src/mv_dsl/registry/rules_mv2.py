@@ -34,5 +34,14 @@ CLUE_RULES: dict[str, ClueRule] = {
     # 2A（连通面积）与副板类规则后续实现
 }
 
-# --- mv2 全局规则（Constraint 子类，后续实现）---
-CONSTRAINTS: dict[str, object] = {}
+# --- mv2 全局规则（Constraint 子类）---
+# 已实现：2H(横向)/2T(无三连)/2Z(零和)/2F(花田)
+# 未实现（连通类）：2C(连方矩形)/2G(面积4)/2G'(面积3)/2S(分段)/2B(桥)
+from ..combinators.constraint import GH2, GT2, GZeroSum, GFlowers
+
+CONSTRAINTS: dict[str, object] = {
+    "2H": GH2(),
+    "2T": GT2(),
+    "2Z": GZeroSum(),
+    "2F": GFlowers(),
+}
