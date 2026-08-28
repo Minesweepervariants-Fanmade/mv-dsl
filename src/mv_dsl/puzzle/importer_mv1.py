@@ -90,7 +90,43 @@ def parse_level_id(level_id: str) -> tuple[tuple[str, ...], int, int, int | None
     return rules, width, height, mine_count
 
 
-def parse_board(board: str, width: int, height: int) -> tuple[tuple[Cell, ...], ...]:
+def resolve_letter(letter: str, rules: tuple[str, ...]) -> str:
+    """把 board 字母解析为规则 id——**依赖关卡的规则组合**。
+
+    这是 mv1 格式最易错之处：同一个字母在不同关卡含义不同。官方实现
+    （`puzzle_mv.py` 的 `compute()`）按规则组合先做字符替换再查表，本函数等价实现：
+
+    | 关卡规则组合 | 字母 | 含义 |
+    |---|---|---|
+    | `[L][M]` | `G` / `L` | Liar(+1/-1) ∘ Multiple |
+    | `[M][X]` | `M` | Multiple ∘ Cross |
+    | `[N][X]` | `N` | Negative ∘ Cross |
+    | `[M][N]` | `M` | Multiple ∘ Negative |
+
+    同时兼容官方文件中已替换形态（`D`/`E`/`B`/`C`/`A`）——查表时直接命中。
+    """
+    combo = set(rules)
+    # 顺序与官方一致：L-M 优先，其次 M-X、N-X、M-N
+    if {"L", "M"} <= combo:
+        if letter == "G":
+            return "LM+"
+        if letter == "L":
+            return "LM-"
+    if {"M", "X"} <= combo and letter == "M":
+        return "MX"
+    if {"N", "X"} <= combo and letter == "N":
+        return "NX"
+    if {"M", "N"} <= combo and letter == "M":
+        return "MN"
+    try:
+        return CLUE_LETTERS[letter]
+    except KeyError:
+        raise ValueError(f"未知 board 字母: {letter!r}（关卡规则 {rules}）") from None
+
+
+def parse_board(
+    board: str, width: int, height: int, rules: tuple[str, ...] = ()
+) -> tuple[tuple[Cell, ...], ...]:
     """解析 mv1 答案盘字符串为格子矩阵。
 
     染色沿用官方规则：`(row + col) % 2 == 1`（1M / 1N 依赖）。
@@ -114,9 +150,7 @@ def parse_board(board: str, width: int, height: int) -> tuple[tuple[Cell, ...], 
             elif ch in _EMPTY_CHARS:
                 row.append(Cell(mine=False, colored=colored))
             else:
-                rule = CLUE_LETTERS.get(ch.upper())
-                if rule is None:
-                    raise ValueError(f"未知 board 字符: {ch!r}")
+                rule = resolve_letter(ch.upper(), rules)
                 row.append(
                     Cell(
                         mine=False,
@@ -136,7 +170,7 @@ def import_puzzle(line: str) -> Puzzle:
     level_id, board = parts[0], parts[1]
 
     rules, width, height, mine_count = parse_level_id(level_id)
-    cells = parse_board(board, width, height)
+    cells = parse_board(board, width, height, rules)
     return Puzzle(
         source="mv1",
         level_id=level_id,
