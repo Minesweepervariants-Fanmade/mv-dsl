@@ -9,7 +9,7 @@ from ...ir.expr import Cmp, Lin, all_of, sum_of
 from .constraint import Constraint
 
 
-class GT2(Constraint):
+class C2Triplet(Constraint):
     id = "2T"
 
     def encode(self, model, puzzle, mine_vars):

@@ -62,25 +62,25 @@ CLUE_RULES: dict[str, ClueRule] = {
 # 已实现：Q(Quad)/T(Triplet)/B(Balance)/D(Dual)/U(Unary)/A(AntiKnight)/H(Horizontal)
 # 未实现（连通类）：C(八连通)/O(Outside)/S(Snake)/T'(必三连)/D'(战舰)
 from ..combinators.constraint import (
-    GAntiKnight,
-    GConnected,
-    GBalance,
-    GDual,
-    GHorizontal,
-    GQuad,
-    GTriplet,
-    GTripletReq,
-    GUnary,
+    CAntiKnight,
+    CConnected,
+    CBalance,
+    CDual,
+    CHorizontal,
+    CQuad,
+    CTriplet,
+    CTripletReq,
+    CUnary,
 )
 
 CONSTRAINTS: dict[str, object] = {
-    "Q": GQuad(),
-    "T": GTriplet(),
-    "B": GBalance(),
-    "D": GDual(),
-    "U": GUnary(),
-    "A": GAntiKnight(),
-    "H": GHorizontal(),
-    "C": GConnected(),
-    "T'": GTripletReq(),
+    "Q": CQuad(),
+    "T": CTriplet(),
+    "B": CBalance(),
+    "D": CDual(),
+    "U": CUnary(),
+    "A": CAntiKnight(),
+    "H": CHorizontal(),
+    "C": CConnected(),
+    "T'": CTripletReq(),
 }

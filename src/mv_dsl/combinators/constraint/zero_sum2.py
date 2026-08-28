@@ -6,7 +6,7 @@ from ...ir.expr import Cmp, Lin, all_of, sum_of
 from .constraint import Constraint
 
 
-class GZeroSum(Constraint):
+class C2ZeroSum(Constraint):
     id = "2Z"
 
     def encode(self, model, puzzle, mine_vars):

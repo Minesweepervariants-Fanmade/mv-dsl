@@ -33,7 +33,7 @@ _NEIGH8 = ((0, 1), (1, 0), (0, -1), (-1, 0), (1, 1), (1, -1), (-1, 1), (-1, -1))
 from .constraint import Constraint
 
 
-class GConnected(Constraint):
+class CConnected(Constraint):
     id = "C"
 
     def encode(self, model, puzzle, mine_vars):

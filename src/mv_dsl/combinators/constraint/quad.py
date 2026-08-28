@@ -9,7 +9,7 @@ from ...ir.expr import BVar, Or, all_of
 from .constraint import Constraint
 
 
-class GQuad(Constraint):
+class CQuad(Constraint):
     id = "Q"
 
     def encode(self, model, puzzle, mine_vars):

@@ -10,7 +10,7 @@ _KNIGHT = (
 )
 
 
-class GAntiKnight(Constraint):
+class CAntiKnight(Constraint):
     id = "A"
 
     def encode(self, model, puzzle, mine_vars):

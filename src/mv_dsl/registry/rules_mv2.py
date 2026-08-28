@@ -39,14 +39,14 @@ CLUE_RULES: dict[str, ClueRule] = {
 # --- mv2 全局规则（Constraint 子类）---
 # 已实现：2H(横向)/2T(无三连)/2Z(零和)/2F(花田)
 # 未实现（连通类）：2C(连方矩形)/2G(面积4)/2G'(面积3)/2S(分段)/2B(桥)
-from ..combinators.constraint import GGroup4, GGroup3, GH2, GSegment, GT2, GZeroSum, GFlowers
+from ..combinators.constraint import C2Group4, C2Group3, C2Horizontal, C2Segment, C2Triplet, C2ZeroSum, C2Flower
 
 CONSTRAINTS: dict[str, object] = {
-    "2H": GH2(),
-    "2T": GT2(),
-    "2Z": GZeroSum(),
-    "2F": GFlowers(),
-    "2G": GGroup4(),
-    "2G'": GGroup3(),
-    "2S": GSegment(),
+    "2H": C2Horizontal(),
+    "2T": C2Triplet(),
+    "2Z": C2ZeroSum(),
+    "2F": C2Flower(),
+    "2G": C2Group4(),
+    "2G'": C2Group3(),
+    "2S": C2Segment(),
 }

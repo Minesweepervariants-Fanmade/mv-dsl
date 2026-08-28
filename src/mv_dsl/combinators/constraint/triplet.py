@@ -18,7 +18,7 @@ _TRIPLES = (
 )
 
 
-class GTriplet(Constraint):
+class CTriplet(Constraint):
     id = "T"
 
     def encode(self, model, puzzle, mine_vars):

@@ -6,7 +6,7 @@ from ...ir.expr import BVar, Not, Or, all_of
 from .constraint import Constraint
 
 
-class GHorizontal(Constraint):
+class CHorizontal(Constraint):
     id = "H"
 
     def encode(self, model, puzzle, mine_vars):

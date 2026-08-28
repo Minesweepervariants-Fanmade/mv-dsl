@@ -9,7 +9,7 @@ from ...ir.expr import BVar, Cmp, Lin, Iff, And, Not, all_of, sum_of
 from .constraint import Constraint
 
 
-class GSegment(Constraint):
+class C2Segment(Constraint):
     id = "2S"
 
     def encode(self, model, puzzle, mine_vars):

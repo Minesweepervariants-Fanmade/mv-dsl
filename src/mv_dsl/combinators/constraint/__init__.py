@@ -1,26 +1,26 @@
 """Constraint（全局谓词）组合子。"""
 
 from .constraint import Constraint
-from .g_quad import GQuad
-from .g_triplet import GTriplet
-from .g_balance import GBalance
-from .g_unary import GUnary
-from .g_anti_knight import GAntiKnight
-from .g_horizontal import GHorizontal
-from .g_dual import GDual
-from .g_h2 import GH2
-from .g_t2 import GT2
-from .g_zero_sum import GZeroSum
-from .g_flowers import GFlowers
-from .g_triplet_req import GTripletReq
-from .g_connected import GConnected
-from .g_group_area import GGroup4, GGroup3
-from .g_segment import GSegment
+from .quad import CQuad
+from .triplet import CTriplet
+from .balance import GBalance
+from .unary import CUnary
+from .anti_knight import CAntiKnight
+from .horizontal import CHorizontal
+from .dual import CDual
+from .horizontal2 import C2Horizontal
+from .triplet2 import C2Triplet
+from .zero_sum2 import C2ZeroSum
+from .flower2 import C2Flower
+from .triplet_req import CTripletReq
+from .connected import CConnected
+from .group2 import C2Group4, C2Group3
+from .segment2 import C2Segment
 
 __all__ = [
     "Constraint",
-    "GQuad", "GTriplet", "GBalance", "GUnary", "GAntiKnight",
-    "GHorizontal", "GDual", "GH2", "GT2", "GZeroSum", "GFlowers",
-    "GTripletReq", "GConnected",
-    "GGroup4", "GGroup3", "GSegment",
+    "CQuad", "CTriplet", "GBalance", "CUnary", "CAntiKnight",
+    "CHorizontal", "CDual", "C2Horizontal", "C2Triplet", "C2ZeroSum", "C2Flower",
+    "CTripletReq", "CConnected",
+    "C2Group4", "C2Group3", "C2Segment",
 ]

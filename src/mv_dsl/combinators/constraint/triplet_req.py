@@ -12,7 +12,7 @@ from .constraint import Constraint
 _DIRS = ((1, 0), (0, 1), (1, 1), (1, -1))  # 竖、横、主对角、副对角
 
 
-class GTripletReq(Constraint):
+class CTripletReq(Constraint):
     id = "T'"
 
     def encode(self, model, puzzle, mine_vars):

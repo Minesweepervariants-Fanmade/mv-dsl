@@ -11,10 +11,10 @@ from .connectivity import build_components
 from .constraint import Constraint
 
 
-class GGroupArea(Constraint):
+class C2Group(Constraint):
     """参数化面积约束（area=4 → [2G]；area=3 → [2G']）。"""
 
-    id = "2G"
+    id = "(2G)"
     area: int = 4
 
     def encode(self, model, puzzle, mine_vars):
@@ -27,11 +27,11 @@ class GGroupArea(Constraint):
         return all_of(clauses)
 
 
-class GGroup4(GGroupArea):
+class C2Group4(C2Group):
     id = "2G"
     area = 4
 
 
-class GGroup3(GGroupArea):
+class C2Group3(C2Group):
     id = "2G'"
     area = 3
