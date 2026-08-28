@@ -16,6 +16,7 @@ from ortools.sat.python import cp_model
 
 from ..ir.expr import (
     AllDiff,
+    AllowedAssignments,
     And,
     BConst,
     BVar,
@@ -172,6 +173,11 @@ def _assert(node: object, ctx: _Ctx, enforcement: Any) -> None:
 
     if isinstance(node, ModEq):
         out.AddModuloEquality(_lin(mapping, node.b), _lin(mapping, node.a), node.m)
+        return
+
+    if isinstance(node, AllowedAssignments):
+        exprs = [_lin(mapping, e) for e in node.lins]
+        out.AddAllowedAssignments(exprs, [list(t) for t in node.tuples])
         return
 
     raise TypeError(f"不支持的 IR 节点: {type(node).__name__}")

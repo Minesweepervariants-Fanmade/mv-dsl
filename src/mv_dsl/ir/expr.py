@@ -140,6 +140,19 @@ class ModEq:
     b: Lin
 
 
+@dataclass(frozen=True, slots=True)
+class AllowedAssignments:
+    """表约束：变量组的取值必须落在给定元组集合中。
+
+    用于「邻域 → 值」这类非线性和的规则（数墙段长、段数、最长段）：
+    枚举邻域的全部雷布局（8 邻即 256 种），把每种布局映射到线索值。
+    相比手工构造复杂编码，表约束简洁且求解器有专门的传播算法。
+    """
+
+    lins: tuple[Lin, ...]
+    tuples: tuple[tuple[int, ...], ...]
+
+
 def all_of(args: Iterable[object]) -> object:
     items = tuple(args)
     if not items:

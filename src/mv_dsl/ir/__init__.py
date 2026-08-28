@@ -6,6 +6,7 @@
 
 from .expr import (
     AllDiff,
+    AllowedAssignments,
     And,
     BConst,
     BVar,
@@ -28,6 +29,7 @@ from .expr import (
 
 __all__ = [
     "AllDiff",
+    "AllowedAssignments",
     "And",
     "BConst",
     "BVar",

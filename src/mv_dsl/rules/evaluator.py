@@ -63,46 +63,44 @@ def _is_colored(puzzle: Puzzle, r: int, c: int) -> bool:
     return puzzle.cells[r][c].colored
 
 
-def _wall_segments(puzzle: Puzzle, row: int, col: int) -> tuple[int, ...]:
-    """数墙：沿 8 邻环形扫描，得到各连续雷段长度（**升序**）。
+def wall_segments_from(mines: tuple[bool, ...]) -> tuple[int, ...]:
+    """数墙的纯函数版本：给定 8 邻的雷布局（越界格记为 False），返回升序段长。
 
-    官方实现要点：先找一个非雷邻居作为起点；若 8 邻全是雷，则整圈视为一段。
+    抽成纯函数是为了**表约束**可以枚举全部 2^8 种布局预计算取值。
+    环形段的集合与起点选择无关，故从任意断点（非雷/越界）起扫结果一致。
     """
-    ring = [(row + dr, col + dc) for dr, dc in WALL_ORDER]
-    inside = [
-        (r, c) for r, c in ring if 0 <= r < puzzle.height and 0 <= c < puzzle.width
-    ]
-    if not inside:
+    if not mines:
         return ()
+    if all(mines):
+        return (len(mines),)
 
-    start = None
-    for idx, (r, c) in enumerate(ring):
-        if 0 <= r < puzzle.height and 0 <= c < puzzle.width and not _is_mine(puzzle, r, c):
-            start = idx
-            break
-
+    start = mines.index(False)
+    ordered = mines[start:] + mines[:start]
     segments: list[int] = []
-    if start is None:
-        # 全为雷：整圈一段
-        segments.append(len(inside))
-    else:
-        ordered = ring[start:] + ring[:start]
-        cur = 0
-        for r, c in ordered:
-            if not (0 <= r < puzzle.height and 0 <= c < puzzle.width):
-                # 越界视为断开（官方实现中越界格不贡献但会重置计数）
-                if cur > 0:
-                    segments.append(cur)
-                    cur = 0
-                continue
-            if _is_mine(puzzle, r, c):
-                cur += 1
-            elif cur > 0:
-                segments.append(cur)
-                cur = 0
-        if cur > 0:
+    cur = 0
+    for is_mine in ordered:
+        if is_mine:
+            cur += 1
+        elif cur > 0:
             segments.append(cur)
+            cur = 0
+    if cur > 0:
+        segments.append(cur)
     return tuple(sorted(segments))
+
+
+def _wall_segments(puzzle: Puzzle, row: int, col: int) -> tuple[int, ...]:
+    """数墙：沿 8 邻环形扫描，得到各连续雷段长度（**升序**）。"""
+    ring = [(row + dr, col + dc) for dr, dc in WALL_ORDER]
+    mines = tuple(
+        (0 <= r < puzzle.height and 0 <= c < puzzle.width and _is_mine(puzzle, r, c))
+        for r, c in ring
+    )
+    if not any(
+        0 <= r < puzzle.height and 0 <= c < puzzle.width for r, c in ring
+    ):
+        return ()
+    return wall_segments_from(mines)
 
 
 def _eyesight(puzzle: Puzzle, row: int, col: int) -> tuple[int, int]:
