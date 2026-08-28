@@ -44,9 +44,20 @@ class A2Area(Aggregate):
         return len(visited)
 
     def encode(self, model, puzzle, row, col, cells, weight, mine_vars, clue_var, relation):
-        if not isinstance(relation, RelationEquals):
-            raise NotImplementedError("A2Area 仅支持 RelationEquals")
         shown = puzzle.cells[row][col].clue.value
+        from ..relation.encrypted import RelationEncrypted, perm_value
+        from ..relation.offset import RelationOffset
+
+        if isinstance(relation, RelationEncrypted):
+            # [2EA]：显示值为加密索引 → 真实面积 = 置换反解
+            target = perm_value(model, puzzle, shown)
+        elif isinstance(relation, RelationOffset):
+            # [2LA-]：面积 == 显示 ± 1（误差方向未知）
+            target = None  # 下方特判
+        elif isinstance(relation, RelationEquals):
+            target = Lin((), shown)
+        else:
+            raise NotImplementedError(f"A2Area 不支持 {type(relation).__name__}")
         comps = model.extras["components"]  # 由 compiler 预构建
         n = puzzle.width * puzzle.height
 
@@ -75,4 +86,12 @@ class A2Area(Aggregate):
             model.add(Imp(Not(present), Cmp("==", contrib, Lin((), 0))))
             contribs.append(contrib)
 
-        return Cmp("==", sum_of(contribs), Lin((), shown))
+        area_sum = sum_of(contribs)
+        if isinstance(relation, RelationOffset):
+            return Or(
+                (
+                    Cmp("==", area_sum, Lin((), shown + 1)),
+                    Cmp("==", area_sum, Lin((), shown - 1)),
+                )
+            )
+        return Cmp("==", area_sum, target)

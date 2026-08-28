@@ -25,11 +25,11 @@ from .relation import Relation
 class RelationOffset(Relation):
     id = "offset"
 
-    def display(self, real_value: int, direction: int = 0) -> int:
+    def display(self, real_value: int, direction: int = 0, puzzle=None, row=None, col=None) -> int:
         shown = real_value + direction
         return -shown if shown < 0 else shown  # 官方边界：为负时翻转
 
-    def apply(self, model, total: Lin, clue_var: Lin):
+    def apply(self, model, total: Lin, clue_var: Lin, puzzle=None, row=None, col=None):
         # 真实值 == 显示值 ± 1（玩家视角，方向无关）
         return Or(
             (

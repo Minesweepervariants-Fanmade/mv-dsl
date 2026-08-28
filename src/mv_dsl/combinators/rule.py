@@ -35,7 +35,7 @@ class ClueRule:
     def value(self, puzzle, row: int, col: int, direction: int = 0) -> Any:
         cells = self.region.cells(puzzle, row, col)
         real = self.aggregate.value(puzzle, row, col, cells, self.weight)
-        return self.relation.display(real, direction)
+        return self.relation.display(real, direction, puzzle, row, col)
 
     def encode(self, model, puzzle, row: int, col: int, mine_vars, clue_var) -> Any:
         cells = self.region.cells(puzzle, row, col)

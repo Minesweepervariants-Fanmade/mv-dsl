@@ -62,7 +62,7 @@ class AEyesight(Aggregate):
             + vision_chain(model, right, mine_vars, "r")
             + 1
         )
-        return relation.apply(model, total, clue_var)
+        return relation.apply(model, total, clue_var, puzzle, row, col)
 
 
 def _region_of(puzzle, row, col):

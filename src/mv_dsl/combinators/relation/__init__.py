@@ -4,5 +4,14 @@ from .relation import Relation
 from .equals import RelationEquals
 from .offset import RelationOffset
 from .modulo import RelationModulo
+from .encrypted import RelationEncrypted
+from .liar_modulo import RelationLiarModulo
 
-__all__ = ["Relation", "RelationEquals", "RelationOffset", "RelationModulo"]
+__all__ = [
+    "Relation",
+    "RelationEquals",
+    "RelationOffset",
+    "RelationModulo",
+    "RelationEncrypted",
+    "RelationLiarModulo",
+]

@@ -40,7 +40,7 @@ class ASightDiff(Aggregate):
             + vision_chain(model, down, mine_vars, "d")
             - (vision_chain(model, left, mine_vars, "l") + vision_chain(model, right, mine_vars, "r"))
         )
-        return relation.apply(model, total, clue_var)
+        return relation.apply(model, total, clue_var, puzzle, row, col)
 
 
 def _region_of(puzzle, row, col):

@@ -22,14 +22,32 @@ class AAbsoluteSum(Aggregate):
         return abs(total)
 
     def encode(self, model, puzzle, row, col, cells, weight, mine_vars, clue_var, relation):
-        if not isinstance(relation, RelationEquals):
-            raise NotImplementedError(
-                "AAbsoluteSum 仅支持 RelationEquals（官方 mv1 的 Negative 家族无 Liar 组合）"
-            )
+        from ..relation.encrypted import RelationEncrypted, perm_value
+        from ..relation.offset import RelationOffset
+
         terms = [
             Lin(((mine_vars[(r, c)], weight.coeff(puzzle.cells[r][c])),))
             for r, c in cells
         ]
         total = sum_of(terms)
+        if isinstance(relation, RelationEncrypted):
+            # [2E1N]：|Σ| == 置换[显示] ⇔ Σ == ±置换[显示]
+            target = perm_value(model, puzzle, puzzle.cells[row][col].clue.value)
+            return Or((Cmp("==", total, target), Cmp("==", total, target * -1)))
+        if isinstance(relation, RelationOffset):
+            # [2L1N-]：|Σ| == 显示 ± 1 ⇔ Σ == ±(显示±1)
+            d = puzzle.cells[row][col].clue.value
+            return Or(
+                (
+                    Cmp("==", total, Lin((), d + 1)),
+                    Cmp("==", total, Lin((), -d - 1)),
+                    Cmp("==", total, Lin((), d - 1)),
+                    Cmp("==", total, Lin((), -d + 1)),
+                )
+            )
+        if not isinstance(relation, RelationEquals):
+            raise NotImplementedError(
+                f"AAbsoluteSum 不支持 {type(relation).__name__}"
+            )
         # |Σ| == v ⇔ (Σ == v) ∨ (Σ == -v)
         return Or((Cmp("==", total, clue_var), Cmp("==", total, clue_var * -1)))

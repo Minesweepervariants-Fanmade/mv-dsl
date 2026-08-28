@@ -18,8 +18,8 @@ class RelationModulo(Relation):
     id = "modulo"
     m: int = 3
 
-    def display(self, real_value: int, direction: int = 0) -> int:
+    def display(self, real_value: int, direction: int = 0, puzzle=None, row=None, col=None) -> int:
         return real_value % self.m
 
-    def apply(self, model, total, clue_var):
+    def apply(self, model, total, clue_var, puzzle=None, row=None, col=None):
         return ModEq(total, self.m, clue_var)

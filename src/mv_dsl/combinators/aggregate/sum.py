@@ -22,4 +22,4 @@ class ASum(Aggregate):
             for r, c in cells
         ]
         total = sum_of(terms)
-        return relation.apply(model, total, clue_var)
+        return relation.apply(model, total, clue_var, puzzle, row, col)

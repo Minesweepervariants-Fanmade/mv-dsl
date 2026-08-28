@@ -46,8 +46,9 @@ _SIZE_PATTERN = re.compile(r"(\d+)x(\d+)")
 
 # 纯占位 token（非雷、无线索）
 _EMPTY_TOKENS = {"q": False, "Q": True, "qprior": True}
-# 副板占位
-_SIDE_EMPTY = {"FX": False, "QX": False}
+# 副板占位：QX 非雷；FX 是**可见雷**（副板 2P 距离积表列等，官方 "F" 开头 = 雷）
+_SIDE_MINE = {"FX"}
+_SIDE_EMPTY = {"QX"}
 # 明确的雷 token
 _MINE_TOKENS = {"f", "F"}
 
@@ -98,8 +99,10 @@ def parse_token(token: str) -> tuple[bool, Clue | None, bool]:
         return True, None, token.isupper()
     if token in _EMPTY_TOKENS:
         return False, None, _EMPTY_TOKENS[token]
+    if token in _SIDE_MINE:
+        return True, None, True  # 副板可见雷（FX）
     if token in _SIDE_EMPTY:
-        return False, None, True
+        return False, None, True  # 副板非雷占位（QX）
 
     visible = any(ch.isupper() for ch in token)
     low = token.lower()
@@ -117,6 +120,20 @@ def parse_token(token: str) -> tuple[bool, Clue | None, bool]:
     # 规则 id 还原大小写形态（2X' 等）：保留撇号/尖号
     rule = _restore_rule_case(rule_raw, token)
     value = int(value_raw)
+
+    # [2L] 误差归一化：带 `-` 的 token 是**误差格**（玩家不知道 +1/-1），
+    # 规则 id 加 `-` 后缀标记（"2L-" / "2LM-" / "2EL-"），注册表据此选
+    # RelationOffset（双向 ±1）而非 RelationEquals。
+    # 值编码分两种（对照官方 GetCellConstraint）：
+    # - 一般组合（2L/2LM/2LD/2LX/2LA/2L1x）：num77 = -neg - 1（显示值）
+    # - [2LP]（距离积，官方 :4313 num92 = |value|）：保持绝对值原样——
+    #   完全平方时真实距离积 ∈ {(√|v|-1)², (√|v|+1)²}，否则 == |v|
+    if value_raw.startswith("-") and (rule.startswith("2L") or rule == "2EL"):
+        if rule == "2LP":
+            value = -value
+        else:
+            value = -value - 1
+        rule = rule + "-"
     return False, Clue(rule=rule, value=value, visible=visible), visible
 
 

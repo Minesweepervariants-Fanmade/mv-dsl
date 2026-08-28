@@ -10,6 +10,7 @@ from __future__ import annotations
 from ...ir.expr import And, Cmp, Lin, Or
 from .aggregate import Aggregate
 from ..relation.equals import RelationEquals
+from ..relation.encrypted import RelationEncrypted, perm_value
 
 
 class A2Cross(Aggregate):
@@ -30,8 +31,6 @@ class A2Cross(Aggregate):
         return colored * 10 + uncolored
 
     def encode(self, model, puzzle, row, col, cells, weight, mine_vars, clue_var, relation):
-        if not isinstance(relation, RelationEquals):
-            raise NotImplementedError("A2Cross 仅支持 RelationEquals")
         shown = puzzle.cells[row][col].clue.value
         a, b = shown // 10, shown % 10
 
@@ -42,6 +41,34 @@ class A2Cross(Aggregate):
                 colored_lin = colored_lin + Lin(((mine_vars[(r, c)], 1),))
             else:
                 uncolored_lin = uncolored_lin + Lin(((mine_vars[(r, c)], 1),))
+        total_lin = colored_lin + uncolored_lin
+
+        from ..relation.offset import RelationOffset
+
+        if isinstance(relation, RelationOffset):
+            # [2LX-]（官方 mv2 反编译 4281-4309）：显示值已归一化为 num77。
+            # 总雷数 == (a+b) ± 1（误差方向未知），且染色或非染色 ∈ {a, b}。
+            cond = [Cmp("==", colored_lin, Lin((), a)), Cmp("==", uncolored_lin, Lin((), a))]
+            if a != b:
+                cond += [Cmp("==", colored_lin, Lin((), b)), Cmp("==", uncolored_lin, Lin((), b))]
+            total_ok = Or(
+                (Cmp("==", total_lin, Lin((), a + b + 1)), Cmp("==", total_lin, Lin((), a + b - 1)))
+            )
+            return And((Or(tuple(cond)), total_ok))
+
+        if isinstance(relation, RelationEncrypted):
+            # [2EX]：显示值 10a+b 的两个数字均为加密索引 → 解密为真实值
+            from ..relation.encrypted import perm_value
+
+            ra, rb = perm_value(model, puzzle, a), perm_value(model, puzzle, b)
+            return Or(
+                (
+                    And((Cmp("==", colored_lin, ra), Cmp("==", uncolored_lin, rb))),
+                    And((Cmp("==", colored_lin, rb), Cmp("==", uncolored_lin, ra))),
+                )
+            )
+        if not isinstance(relation, RelationEquals):
+            raise NotImplementedError(f"A2Cross 不支持 {type(relation).__name__}")
 
         return Or(
             (

@@ -9,8 +9,8 @@ from .relation import Relation
 class RelationEquals(Relation):
     id = "equals"
 
-    def display(self, real_value: int, direction: int = 0) -> int:
+    def display(self, real_value: int, direction: int = 0, puzzle=None, row=None, col=None) -> int:
         return real_value
 
-    def apply(self, model, total, clue_var):
+    def apply(self, model, total, clue_var, puzzle=None, row=None, col=None):
         return Cmp("==", total, clue_var)

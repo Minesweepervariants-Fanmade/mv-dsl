@@ -35,6 +35,26 @@ class AWallSegments(Aggregate):
         return segments if segments else (0,)
 
     def encode(self, model, puzzle, row, col, cells, weight, mine_vars, clue_var, relation):
+        from ..relation.encrypted import RelationEncrypted, perm_value
+
+        if isinstance(relation, RelationEncrypted):
+            # 官方 [2E1W] 特例（mv2 反编译 4832-4873 行）：加密值显示的是
+            # **单段墙的段长**——约束为「段起点 ≤ 1 ∧ 区域雷数 == 置换[显示]」。
+            shown = puzzle.cells[row][col].clue.value
+            return And(
+                (
+                    Cmp("<=", group_count_lin(model, puzzle, row, col, mine_vars), Lin((), 1)),
+                    Cmp("==", ring_mine_count(puzzle, row, col, mine_vars), perm_value(model, puzzle, shown)),
+                )
+            )
+        from ..relation.offset import RelationOffset
+
+        if isinstance(relation, RelationOffset):
+            # [2L1W-]：数墙 + 误差。官方用 TapaLiarMapping 表（mv2 反编译 4606-4649），
+            # 表未移植，暂跳过（compiler 捕获 NotImplementedError）。
+            raise NotImplementedError(
+                "2L1W（数墙+误差）需官方 TapaLiarMapping 表，暂未实现"
+            )
         if not isinstance(relation, RelationEquals):
             raise NotImplementedError("AWallSegments 仅支持 RelationEquals")
 
