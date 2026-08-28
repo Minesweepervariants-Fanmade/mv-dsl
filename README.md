@@ -51,6 +51,3 @@ uv run pytest
 ## 许可证
 
 Apache-2.0
-
-> 参考了 Minesweepervariants-Fanmade 项目的**算法思路**（no-good 唯一性验证、clone + AddHint 增量补偿等），
-> 但该项目为 GPL-3.0，本项目未复用其任何代码。
