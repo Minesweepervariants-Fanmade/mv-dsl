@@ -91,6 +91,12 @@ def compile_puzzle(puzzle: Puzzle) -> CompiledPuzzle:
             except Exception as exc:  # noqa: BLE001
                 skipped.append(f"[{rule_id}] {exc}")
 
+    # 2A 面积规则：预构建四连通分量变量体系（AArea.encode 消费）
+    if "2A" in puzzle.rules:
+        from ..combinators.constraint.connectivity import build_components
+
+        model.extras["components"] = build_components(model, puzzle, mine_vars)
+
     # 逐线索格生成约束
     for r, c, cell in puzzle.iter_cells():
         if cell.clue is None:

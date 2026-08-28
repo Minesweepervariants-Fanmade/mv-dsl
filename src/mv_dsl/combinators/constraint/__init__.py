@@ -12,9 +12,12 @@ from .g_h2 import GH2
 from .g_t2 import GT2
 from .g_zero_sum import GZeroSum
 from .g_flowers import GFlowers
+from .g_triplet_req import GTripletReq
+from .g_connected import GConnected
 
 __all__ = [
     "Constraint",
     "GQuad", "GTriplet", "GBalance", "GUnary", "GAntiKnight",
     "GHorizontal", "GDual", "GH2", "GT2", "GZeroSum", "GFlowers",
+    "GTripletReq", "GConnected",
 ]

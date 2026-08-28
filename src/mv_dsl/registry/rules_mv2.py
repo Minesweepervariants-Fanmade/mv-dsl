@@ -11,6 +11,7 @@ from ..combinators.aggregate import (
     A2Cross,
     A2CrossEither,
     A2Product,
+    AArea,
     ASum,
 )
 from ..combinators.region import (
@@ -31,7 +32,8 @@ CLUE_RULES: dict[str, ClueRule] = {
     "2D'": ClueRule("2D'", RShiftUpTwo(), WIdentity(), ASum(), RelationEquals()),
     "2M": ClueRule("2M", RMoore(), WIdentity(), ASum(), RelationModulo(3)),
     "2P": ClueRule("2P", RFull(), WIdentity(), A2Product(), RelationEquals()),
-    # 2A（连通面积）与副板类规则后续实现
+    "2A": ClueRule("2A", RFull(), WIdentity(), AArea(), RelationEquals()),
+    # 副板类规则（2E/2L/2E^/2L'/2E'/2I/2U）后续实现
 }
 
 # --- mv2 全局规则（Constraint 子类）---

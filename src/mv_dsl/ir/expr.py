@@ -195,6 +195,7 @@ class Model:
 
     vars: dict[int, Var] = field(default_factory=dict)
     constraints: list[object] = field(default_factory=list)
+    extras: dict[str, object] = field(default_factory=dict)  # 规则共享上下文
     _next_vid: int = 0
 
     def new_bool(self, name: str) -> BVar:

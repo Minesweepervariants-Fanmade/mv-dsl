@@ -63,11 +63,13 @@ CLUE_RULES: dict[str, ClueRule] = {
 # 未实现（连通类）：C(八连通)/O(Outside)/S(Snake)/T'(必三连)/D'(战舰)
 from ..combinators.constraint import (
     GAntiKnight,
+    GConnected,
     GBalance,
     GDual,
     GHorizontal,
     GQuad,
     GTriplet,
+    GTripletReq,
     GUnary,
 )
 
@@ -79,4 +81,6 @@ CONSTRAINTS: dict[str, object] = {
     "U": GUnary(),
     "A": GAntiKnight(),
     "H": GHorizontal(),
+    "C": GConnected(),
+    "T'": GTripletReq(),
 }
