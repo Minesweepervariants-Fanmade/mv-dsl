@@ -93,8 +93,20 @@ def verify_puzzle(puzzle: Puzzle, rep: Report) -> None:
     for rule in puzzle.rules:
         rep.by_rule[rule] += 1
 
-    assignment = Assignment(compiled.assignment_from_answer(puzzle))
-    bad = violations(compiled.model, assignment)
+    # 优先用 IR 直算（比求解器快几个数量级）；
+    # 若模型含辅助变量（如视野链 vis_*），其取值需由约束推导 → 回退 CP-SAT：
+    # 把答案盘的雷布局固定为约束，可满足则说明答案盘满足全部规则。
+    try:
+        bad = violations(compiled.model, Assignment(compiled.assignment_from_answer(puzzle)))
+    except KeyError:
+        from mv_dsl.backends.cpsat import solve
+        from mv_dsl.ir.expr import Cmp, Lin
+
+        for (r, c), vid in compiled.mine_vars.items():
+            compiled.model.add(
+                Cmp("==", Lin(((vid, 1),)), Lin((), 1 if puzzle.cells[r][c].mine else 0))
+            )
+        bad = [] if solve(compiled.model).satisfiable else [-1]
     if bad:
         rep.failed += 1
         for rule in puzzle.rules:

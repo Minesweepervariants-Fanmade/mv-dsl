@@ -21,7 +21,18 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from ..ir.expr import AllowedAssignments, Cmp, Lin, Model, Or, sum_of
+from ..ir.expr import (
+    AllowedAssignments,
+    And,
+    BVar,
+    Cmp,
+    Iff,
+    Lin,
+    Model,
+    Not,
+    Or,
+    sum_of,
+)
 from ..puzzle.model import Clue, Puzzle
 from .evaluator import WALL_ORDER, region, wall_segments_from
 
@@ -129,6 +140,66 @@ def _weighted_sum(
     return sum_of(terms)
 
 
+def _vision_chain(
+    model: Model,
+    cells: list[tuple[int, int]],
+    mine_vars: dict[tuple[int, int], int],
+    tag: str,
+) -> Lin:
+    """构造「某方向连续可见（非雷）格数」的表达式。
+
+    视野规则 [E]/[E'] 依赖整行整列，无法用邻域表约束，改用**辅助变量链**：
+    第 k 格可见 ⟺ 第 k-1 格可见 ∧ 第 k 格非雷，格数即这些可见标志之和。
+    雷会阻挡视线——链条在遇到雷之后全部为假。
+    """
+    if not cells:
+        return Lin()
+
+    terms: list[Lin] = []
+    prev = None
+    for pos in cells:  # cells 必须按「由近及远」排列
+        vis = model.new_bool(f"vis_{tag}_{pos[0]}_{pos[1]}")
+        not_mine = Not(BVar(mine_vars[pos]))
+        model.add(Iff(vis, not_mine if prev is None else And((prev, not_mine))))
+        terms.append(Lin(((vis.vid, 1),)))
+        prev = vis
+    return sum_of(terms)
+
+
+def _vision_constraint(
+    model: Model,
+    puzzle: Puzzle,
+    row: int,
+    col: int,
+    rule: str,
+    mine_vars: dict[tuple[int, int], int],
+    clue_var: Lin,
+):
+    """视野类规则约束。
+
+    - [E]  值 = 四方向可见格数 + 1（含自身）
+    - [E'] 值 = 纵向视野 − 横向视野（带符号；符号指示更长方向）
+    """
+    up = _vision_chain(
+        model, [(r, col) for r in range(row - 1, -1, -1)], mine_vars, "u"
+    )
+    down = _vision_chain(
+        model, [(r, col) for r in range(row + 1, puzzle.height)], mine_vars, "d"
+    )
+    left = _vision_chain(
+        model, [(row, c) for c in range(col - 1, -1, -1)], mine_vars, "l"
+    )
+    right = _vision_chain(
+        model, [(row, c) for c in range(col + 1, puzzle.width)], mine_vars, "r"
+    )
+
+    value = Lin(((clue_var.terms[0][0], 1),))
+    if rule == "E":
+        return Cmp("==", up + down + left + right + 1, value)
+    # E'：纵向 − 横向（有符号）
+    return Cmp("==", up + down - (left + right), value)
+
+
 def _clue_constraint(
     model: Model,
     puzzle: Puzzle,
@@ -171,7 +242,9 @@ def _clue_constraint(
         return AllowedAssignments(tuple(lins), table)
 
     if base in VISION_RULES:
-        raise UnsupportedRule(f"视野类规则 {base} 依赖整行整列，约束生成待实现")
+        return _vision_constraint(
+            model, puzzle, row, col, base, mine_vars, clue_var
+        )
 
     raise UnsupportedRule(f"未知规则 {clue.rule}")
 
