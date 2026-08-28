@@ -1,0 +1,38 @@
+"""mv2 规则注册表：规则 id → ClueRule 管道实例 / Constraint 实例。
+
+本文件先登记**非副板类**规则（副板规则 2E/2L/2E^/2L'/2E'/2I/2U 后续实现）。
+注意 mv2 的规则 id 均为 `2` 前缀（2X/2D/2P/2M/2A/2X'/2D' 等），
+与 mv1 的单字母/1 前缀规则（V/M/L/...）互不冲突。
+"""
+
+from __future__ import annotations
+
+from ..combinators.aggregate import (
+    A2Cross,
+    A2CrossEither,
+    A2Product,
+    ASum,
+)
+from ..combinators.region import (
+    RFull,
+    RMoore,
+    RShiftUp,
+    RShiftUpTwo,
+)
+from ..combinators.relation import RelationEquals, RelationModulo
+from ..combinators.rule import ClueRule
+from ..combinators.weight import WIdentity
+
+# --- mv2 线索规则（非副板类）---
+CLUE_RULES: dict[str, ClueRule] = {
+    "2X": ClueRule("2X", RMoore(), WIdentity(), A2Cross(), RelationEquals()),
+    "2X'": ClueRule("2X'", RMoore(), WIdentity(), A2CrossEither(), RelationEquals()),
+    "2D": ClueRule("2D", RShiftUp(), WIdentity(), ASum(), RelationEquals()),
+    "2D'": ClueRule("2D'", RShiftUpTwo(), WIdentity(), ASum(), RelationEquals()),
+    "2M": ClueRule("2M", RMoore(), WIdentity(), ASum(), RelationModulo(3)),
+    "2P": ClueRule("2P", RFull(), WIdentity(), A2Product(), RelationEquals()),
+    # 2A（连通面积）与副板类规则后续实现
+}
+
+# --- mv2 全局规则（Constraint 子类，后续实现）---
+CONSTRAINTS: dict[str, object] = {}

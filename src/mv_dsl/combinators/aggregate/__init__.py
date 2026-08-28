@@ -8,6 +8,9 @@ from .longest_wall import ALongestWall
 from .group_count import AGroupCount
 from .eyesight import AEyesight
 from .sight_diff import ASightDiff
+from .cross2 import A2Cross
+from .cross_either import A2CrossEither
+from .product import A2Product
 
 __all__ = [
     "Aggregate",
@@ -19,4 +22,7 @@ __all__ = [
     "AGroupCount",
     "AEyesight",
     "ASightDiff",
+    "A2Cross",
+    "A2CrossEither",
+    "A2Product",
 ]

@@ -6,5 +6,8 @@ from .knight import RKnight
 from .cross import RCross
 from .mini_cross import RMiniCross
 from .eyesight import REyesight
+from .shift_up import RShiftUp
+from .shift_up_two import RShiftUpTwo
+from .full import RFull
 
-__all__ = ["Region", "RMoore", "RKnight", "RCross", "RMiniCross", "REyesight"]
+__all__ = ["Region", "RMoore", "RKnight", "RCross", "RMiniCross", "REyesight", "RShiftUp", "RShiftUpTwo", "RFull"]

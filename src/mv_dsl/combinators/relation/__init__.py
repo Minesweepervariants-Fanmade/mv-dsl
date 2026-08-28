@@ -3,5 +3,6 @@
 from .relation import Relation
 from .equals import RelationEquals
 from .offset import RelationOffset
+from .modulo import RelationModulo
 
-__all__ = ["Relation", "RelationEquals", "RelationOffset"]
+__all__ = ["Relation", "RelationEquals", "RelationOffset", "RelationModulo"]

@@ -12,9 +12,13 @@ from __future__ import annotations
 
 from typing import Any
 
-from ..registry.rules_mv1 import CLUE_RULES
+from ..registry.rules_mv1 import CLUE_RULES as _MV1
+from ..registry.rules_mv2 import CLUE_RULES as _MV2
 
-__all__ = ["clue_value", "get_rule"]
+# 合并两代注册表（id 无冲突：mv1 单字母/1 前缀，mv2 2 前缀）
+CLUE_RULES: dict[str, object] = {**_MV1, **_MV2}
+
+__all__ = ["clue_value", "get_rule", "CLUE_RULES"]
 
 
 class UnknownRule(ValueError):
