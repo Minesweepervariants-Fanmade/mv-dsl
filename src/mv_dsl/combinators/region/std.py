@@ -5,7 +5,7 @@ from __future__ import annotations
 from .region import NEIGH8, Region
 
 
-class Rstd(Region):
+class RStd(Region):
     id = "std"
 
     def cells(self, puzzle, row: int, col: int) -> list[tuple[int, int]]:

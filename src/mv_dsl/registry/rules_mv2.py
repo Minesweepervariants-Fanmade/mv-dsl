@@ -16,7 +16,7 @@ from ..combinators.aggregate import (
 )
 from ..combinators.region import (
     RFull,
-    Rstd,
+    RStd,
     RShiftUp,
     RShiftUpTwo,
 )
@@ -26,11 +26,11 @@ from ..combinators.weight import WIdentity
 
 # --- mv2 线索规则（非副板类）---
 CLUE_RULES: dict[str, ClueRule] = {
-    "2X": ClueRule("2X", Rstd(), WIdentity(), A2Cross(), RelationEquals()),
-    "2X'": ClueRule("2X'", Rstd(), WIdentity(), A2CrossEither(), RelationEquals()),
+    "2X": ClueRule("2X", RStd(), WIdentity(), A2Cross(), RelationEquals()),
+    "2X'": ClueRule("2X'", RStd(), WIdentity(), A2CrossEither(), RelationEquals()),
     "2D": ClueRule("2D", RShiftUp(), WIdentity(), ASum(), RelationEquals()),
     "2D'": ClueRule("2D'", RShiftUpTwo(), WIdentity(), ASum(), RelationEquals()),
-    "2M": ClueRule("2M", Rstd(), WIdentity(), ASum(), RelationModulo(3)),
+    "2M": ClueRule("2M", RStd(), WIdentity(), ASum(), RelationModulo(3)),
     "2P": ClueRule("2P", RFull(), WIdentity(), A2Product(), RelationEquals()),
     "2A": ClueRule("2A", RFull(), WIdentity(), AArea(), RelationEquals()),
     # 副板类规则（2E/2L/2E^/2L'/2E'/2I/2U）后续实现

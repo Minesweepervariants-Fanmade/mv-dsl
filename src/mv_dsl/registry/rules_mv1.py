@@ -20,7 +20,7 @@ from ..combinators.region import (
     REyesight,
     RKnight,
     RMiniCross,
-    Rstd,
+    RStd,
     RCross,
 )
 from ..combinators.relation import RelationEquals, RelationOffset
@@ -35,24 +35,24 @@ from ..combinators.weight import (
 # 规则 id → 管道实例（Region ∘ Weight ∘ Aggregate ∘ Relation）
 CLUE_RULES: dict[str, ClueRule] = {
     # --- 线性求和类 ---
-    "V": ClueRule("V", Rstd(), WIdentity(), ASum(), RelationEquals()),
-    "L+": ClueRule("L+", Rstd(), WIdentity(), ASum(), RelationOffset(+1)),
-    "L-": ClueRule("L-", Rstd(), WIdentity(), ASum(), RelationOffset(-1)),
-    "M": ClueRule("M", Rstd(), WDyeDouble(), ASum(), RelationEquals()),
-    "LM+": ClueRule("LM+", Rstd(), WDyeDouble(), ASum(), RelationOffset(+1)),
-    "LM-": ClueRule("LM-", Rstd(), WDyeDouble(), ASum(), RelationOffset(-1)),
+    "V": ClueRule("V", RStd(), WIdentity(), ASum(), RelationEquals()),
+    "L+": ClueRule("L+", RStd(), WIdentity(), ASum(), RelationOffset(+1)),
+    "L-": ClueRule("L-", RStd(), WIdentity(), ASum(), RelationOffset(-1)),
+    "M": ClueRule("M", RStd(), WDyeDouble(), ASum(), RelationEquals()),
+    "LM+": ClueRule("LM+", RStd(), WDyeDouble(), ASum(), RelationOffset(+1)),
+    "LM-": ClueRule("LM-", RStd(), WDyeDouble(), ASum(), RelationOffset(-1)),
     "X": ClueRule("X", RCross(), WIdentity(), ASum(), RelationEquals()),
     "X'": ClueRule("X'", RMiniCross(), WIdentity(), ASum(), RelationEquals()),
     "MX": ClueRule("MX", RCross(), WDyeDouble(), ASum(), RelationEquals()),
     "K": ClueRule("K", RKnight(), WIdentity(), ASum(), RelationEquals()),
     # --- 绝对值类（Negative 家族）---
-    "N": ClueRule("N", Rstd(), WDyeDiff(), AAbsoluteSum(), RelationEquals()),
+    "N": ClueRule("N", RStd(), WDyeDiff(), AAbsoluteSum(), RelationEquals()),
     "NX": ClueRule("NX", RCross(), WDyeDiff(), AAbsoluteSum(), RelationEquals()),
-    "MN": ClueRule("MN", Rstd(), WDyeMn(), AAbsoluteSum(), RelationEquals()),
+    "MN": ClueRule("MN", RStd(), WDyeMn(), AAbsoluteSum(), RelationEquals()),
     # --- 数墙类（表约束）---
-    "W": ClueRule("W", Rstd(), WIdentity(), AWallSegments(), RelationEquals()),
-    "W'": ClueRule("W'", Rstd(), WIdentity(), ALongestWall(), RelationEquals()),
-    "P": ClueRule("P", Rstd(), WIdentity(), AGroupCount(), RelationEquals()),
+    "W": ClueRule("W", RStd(), WIdentity(), AWallSegments(), RelationEquals()),
+    "W'": ClueRule("W'", RStd(), WIdentity(), ALongestWall(), RelationEquals()),
+    "P": ClueRule("P", RStd(), WIdentity(), AGroupCount(), RelationEquals()),
     # --- 视野类（辅助变量链）---
     "E": ClueRule("E", REyesight(), WIdentity(), AEyesight(), RelationEquals()),
     "E'": ClueRule("E'", REyesight(), WIdentity(), ASightDiff(), RelationEquals()),
