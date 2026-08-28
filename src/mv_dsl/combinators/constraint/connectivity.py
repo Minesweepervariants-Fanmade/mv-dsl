@@ -47,8 +47,12 @@ def build_components(
     puzzle: "Puzzle",
     mine_vars: dict[tuple[int, int], int],
     diagonal: bool = False,
+    active_mine: bool = True,
 ) -> dict[tuple[int, int], dict[str, object]]:
-    """生成连通分量变量体系，返回 {pos: {"id": Lin, "layer": Lin, "root": BVar, "count": Lin}}。"""
+    """生成连通分量变量体系，返回 {pos: {"id": Lin, "layer": Lin, "root": BVar, "count": Lin}}。
+
+    `active_mine=False` 时 active 为**非雷**（如 [1O] 需要非雷区连通性）。
+    """
     n = puzzle.width * puzzle.height
     neigh = _NEIGH8 if diagonal else _NEIGH4
 
@@ -69,6 +73,8 @@ def build_components(
     for pos, v in comps.items():
         r, c = pos
         b = BVar(mine_vars[pos])
+        if not active_mine:
+            b = Not(b)  # active = 非雷
         id_expr: Lin = v["id"]
         layer_expr: Lin = v["layer"]
         root: object = v["root"]
@@ -91,6 +97,8 @@ def build_components(
             nr, nc = r + dr, c + dc
             if 0 <= nr < puzzle.height and 0 <= nc < puzzle.width:
                 bq = BVar(mine_vars[(nr, nc)])
+                if not active_mine:
+                    bq = Not(bq)
                 model.add(
                     Imp(And((b, bq)), Cmp("==", id_expr, comps[(nr, nc)]["id"]))
                 )

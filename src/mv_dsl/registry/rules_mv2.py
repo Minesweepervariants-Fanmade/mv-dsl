@@ -37,9 +37,21 @@ CLUE_RULES: dict[str, ClueRule] = {
 }
 
 # --- mv2 全局规则（Constraint 子类）---
-# 已实现：2H(横向)/2T(无三连)/2Z(零和)/2F(花田)
-# 未实现（连通类）：2C(连方矩形)/2G(面积4)/2G'(面积3)/2S(分段)/2B(桥)
-from ..combinators.constraint import C2Group4, C2Group3, C2Horizontal, C2Segment, C2Triplet, C2ZeroSum, C2Flower
+# 已实现：2H(横向)/2T(无三连)/2Z(零和)/2F(花田)/2G(面积4)/2G'(面积3)/2S(分段)
+#         2C(连方)/2B(桥)/2B'(斜桥)/2S'(分段')
+from ..combinators.constraint import (
+    C2Bridge,
+    C2BridgeDiag,
+    C2Connected,
+    C2Flower,
+    C2Group3,
+    C2Group4,
+    C2Horizontal,
+    C2Segment,
+    C2SegmentDiff,
+    C2Triplet,
+    C2ZeroSum,
+)
 
 CONSTRAINTS: dict[str, object] = {
     "2H": C2Horizontal(),
@@ -49,4 +61,8 @@ CONSTRAINTS: dict[str, object] = {
     "2G": C2Group4(),
     "2G'": C2Group3(),
     "2S": C2Segment(),
+    "2C": C2Connected(),
+    "2B": C2Bridge(),
+    "2B'": C2BridgeDiag(),
+    "2S'": C2SegmentDiff(),
 }
