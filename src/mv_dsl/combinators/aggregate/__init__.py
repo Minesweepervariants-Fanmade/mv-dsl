@@ -9,9 +9,9 @@ from .group_count import AGroupCount
 from .eyesight import AEyesight
 from .sight_diff import ASightDiff
 from .cross2 import A2Cross
-from .cross_either import A2CrossEither
-from .product import A2Product
-from .area import AArea
+from .cross_either2 import A2CrossEither
+from .product2 import A2Product
+from .area2 import AArea
 
 __all__ = [
     "Aggregate",

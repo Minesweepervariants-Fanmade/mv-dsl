@@ -17,8 +17,8 @@ from ..relation.equals import RelationEquals
 _NEIGH4 = ((0, 1), (1, 0), (0, -1), (-1, 0))
 
 
-class AArea(Aggregate):
-    id = "area"
+class A2Area(Aggregate):
+    id = "2area"
 
     def value(self, puzzle, row, col, cells, weight):
         """从答案盘计算：4 邻雷区的四连通面积之和（去重）。"""
