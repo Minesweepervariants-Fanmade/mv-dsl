@@ -330,7 +330,96 @@ $\text{clue} = \mathrm{Relation}\big(\mathrm{Aggregate}(\mathrm{Weight}(\mathrm{
 
 ## 8. 目录结构与模块划分
 
-"D:\dev\mv\legacy\stat\puzzle_mv.py" 
+### 8.1 目录树
+
+```
+D:\dev\mv\MVDSL\
+├── PROJECT.md                  # 本文档
+├── README.md
+├── pyproject.toml              # uv 管理，依赖 ortools
+├── mvdsl/                      # 主包（src layout 下为 src/mv_dsl/）
+│   ├── ir/                     # L1 约束中间表示（后端无关）
+│   │   ├── expr.py             #   Lin / Cmp / And / Or / reify / 表约束 / 取模
+│   │   └── eval.py             #   给定赋值检查断言（验证用）
+│   ├── backends/               # L1 后端适配器
+│   │   ├── cpsat.py            #   主后端（OR-Tools CP-SAT）
+│   │   ├── z3.py               #   可选（后续）
+│   │   └── csugar.py           #   可选，S 表达式对照（后续）
+│   ├── combinators/            # L2 六类组合子：按类别嵌套，抽象基类 + 具体子类（每子类独立文件）
+│   │   ├── region/
+│   │   │   ├── region.py       #   class Region（抽象基类）
+│   │   │   ├── moore.py        #   class RMoore（3x3 九宫，[V]）
+│   │   │   ├── knight.py       #   class RKnight（马步 8 格，[K]）
+│   │   │   ├── cross.py        #   class RCross（半径 2 十字，[X]）
+│   │   │   ├── mini_cross.py   #   class RMiniCross（半径 1 十字，[X']）
+│   │   │   └── eyesight.py     #   class REyesight（四方向视线，[E]/[E']）
+│   │   ├── weight/
+│   │   │   ├── weight.py       #   class Weight（抽象基类）
+│   │   │   ├── identity.py     #   class WIdentity（每雷计 1）
+│   │   │   ├── dye_double.py   #   class WDyeDouble（染色雷计 2，[M]）
+│   │   │   ├── dye_diff.py     #   class WDyeDiff（染色 +1/非染色 -1，[N]）
+│   │   │   └── dye_mn.py       #   class WDyeMn（染色 +2/非染色 -1，[M][N]）
+│   │   ├── aggregate/
+│   │   │   ├── aggregate.py    #   class Aggregate（抽象基类）
+│   │   │   ├── sum.py          #   class ASum（求和，[V] 等）
+│   │   │   ├── absolute_sum.py #   class AAbsoluteSum（|Σ|，[N]/[NX]/[MN]）
+│   │   │   ├── wall_segments.py#   class AWallSegments（数墙段长，[W]）
+│   │   │   ├── longest_wall.py #   class ALongestWall（最长段，[W']）
+│   │   │   ├── group_count.py  #   class AGroupCount（段数，[P]）
+│   │   │   ├── eyesight.py     #   class AEyesight（四向可见格数，[E]）
+│   │   │   └── sight_diff.py   #   class ASightDiff（纵横视野差，[E']）
+│   │   ├── relation/
+│   │   │   ├── relation.py     #   class Relation（抽象基类）
+│   │   │   ├── equals.py       #   class RelationEquals（显示 == 真实）
+│   │   │   └── offset.py       #   class RelationOffset（显示 == 真实 ± 1，[L]/[LM]）
+│   │   ├── global_pred/
+│   │   │   └── global_pred.py  #   class GlobalPred（抽象基类，全局规则，后续）
+│   │   ├── sideboard/
+│   │   │   └── sideboard.py    #   class Sideboard（抽象基类，副板，后续）
+│   │   └── rule.py             #   class ClueRule：管道 Region∘Weight∘Aggregate∘Relation
+│   ├── registry/               # L2 规则注册表（数据）
+│   │   ├── rules_mv1.py        #   mv1 规则：id → ClueRule / GlobalPred 实例
+│   │   └── rules_mv2.py        #   mv2 规则（后续）
+│   ├── puzzle/                 # L3 谜题描述
+│   │   ├── model.py            #   Cell / Clue / Puzzle / Sideboard 模型
+│   │   ├── importer_mv1.py     #   mv1 官方格式导入
+│   │   └── importer_mv2.py     #   mv2 官方格式导入（含副板）
+│   ├── rules/                  # 规则语义（基于组合子管道的薄封装）
+│   │   ├── evaluator.py        #   从答案盘计算线索显示值（fill/验证）
+│   │   └── compiler.py         #   谜题 → IR 约束
+│   ├── solver/                 # L0 求解服务（后续）
+│   └── server/                 # 可选：HTTP 适配层（见 §9）
+├── tests/
+│   ├── test_ir_cpsat.py        # IR / 后端单元测试
+│   ├── test_verify_mv1_rules.py# 求值器 vs legacy 基准
+│   ├── test_verify_official.py # 官方答案盘是否满足约束
+│   ├── test_solve_official.py  # CP-SAT 端到端求解
+│   └── test_combinators/       # 组合子单元测试（后续）
+└── data/                       # 官方关卡库（不入库，运行时读取）
+```
+
+### 8.2 组合子的类体系约定
+
+六类组合子各按**类别嵌套目录**，目录内 `{类别}.py` 为**抽象基类**，
+其余文件为**具体子类**（每子类独立文件）。类名前缀约定：
+
+| 类别 | 抽象基类 | 子类前缀 | 示例 |
+|---|---|---|---|
+| Region | `Region` | `R` | `RMoore` / `RKnight` / `REyesight` |
+| Weight | `Weight` | `W` | `WIdentity` / `WDyeDouble` |
+| Aggregate | `Aggregate` | `A` | `ASum` / `AWallSegments` / `AEyesight` |
+| Relation | `Relation` | `Relation`（全名避免与 R 冲突） | `RelationEquals` / `RelationOffset` |
+| Global | `GlobalPred` | `G` | `GQuad` / `GConnected`（后续） |
+| Sideboard | `Sideboard` | `S` | `SPermutation` / `SErrorMarks`（后续） |
+
+一条规则 = 各组合子具体子类的**管道实例**（`rule.py` 的 `ClueRule`）：
+
+$$\\text{clue} = \\mathrm{Relation}(\\mathrm{Aggregate}(\\mathrm{Weight}(\\mathrm{Region}(i,j))))$$
+
+注册表（`registry/`）以**数据**形式登记规则：`id → ClueRule(Region 子类, Weight 子类, Aggregate 子类, Relation 子类)`。
+新增规则 = 新增子类（如需）+ 注册表条目；**组合规则零额外代码**（管道天然复合）。
+求值器与编译器都只依赖管道的两个方法：`value()`（从答案盘算显示值）与 `encode()`（生成约束），
+保证 fill 与约束生成语义一致。
 
 ### 8.3 规则注册表示例
 
