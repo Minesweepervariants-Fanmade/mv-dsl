@@ -58,5 +58,14 @@ def clue_value(puzzle, row: int, col: int, rule: str) -> Any:
     """计算 (row, col) 在 `rule` 下的显示值。
 
     返回类型依聚合子而定：多数为 int；数墙 [W] 返回段长元组（升序）。
+
+    误差规则（[L]/[LM]）的**方向是谜题数据属性**（规则 id 的 `+`/`-` 后缀，
+    对应 mv1 的 `[L+]`/`[L-]`、mv2 token 的符号）——出题端用它计算显示值；
+    玩家侧求解不感知方向（约束由 `RelationOffset.apply` 双向析取）。
     """
-    return get_rule(rule).value(puzzle, row, col)
+    direction = 0
+    if rule.endswith("+"):
+        direction = 1
+    elif rule.endswith("-"):
+        direction = -1
+    return get_rule(rule).value(puzzle, row, col, direction)

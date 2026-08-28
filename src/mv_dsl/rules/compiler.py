@@ -91,7 +91,7 @@ def compile_puzzle(puzzle: Puzzle) -> CompiledPuzzle:
             except Exception as exc:  # noqa: BLE001
                 skipped.append(f"[{rule_id}] {exc}")
 
-    # 2A 面积规则：预构建四连通分量变量体系（AArea.encode 消费）
+    # 2A 面积规则：预构建四连通分量变量体系（A2Area.encode 消费）
     if "2A" in puzzle.rules:
         from ..combinators.constraint.connectivity import build_components
 

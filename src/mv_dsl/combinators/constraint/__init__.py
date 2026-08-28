@@ -3,7 +3,7 @@
 from .constraint import Constraint
 from .quad import CQuad
 from .triplet import CTriplet
-from .balance import GBalance
+from .balance import CBalance
 from .unary import CUnary
 from .anti_knight import CAntiKnight
 from .horizontal import CHorizontal
@@ -19,7 +19,7 @@ from .segment2 import C2Segment
 
 __all__ = [
     "Constraint",
-    "CQuad", "CTriplet", "GBalance", "CUnary", "CAntiKnight",
+    "CQuad", "CTriplet", "CBalance", "CUnary", "CAntiKnight",
     "CHorizontal", "CDual", "C2Horizontal", "C2Triplet", "C2ZeroSum", "C2Flower",
     "CTripletReq", "CConnected",
     "C2Group4", "C2Group3", "C2Segment",

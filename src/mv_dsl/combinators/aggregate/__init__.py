@@ -11,7 +11,7 @@ from .sight_diff import ASightDiff
 from .cross2 import A2Cross
 from .cross_either2 import A2CrossEither
 from .product2 import A2Product
-from .area2 import AArea
+from .area2 import A2Area
 
 __all__ = [
     "Aggregate",
@@ -26,5 +26,5 @@ __all__ = [
     "A2Cross",
     "A2CrossEither",
     "A2Product",
-    "AArea",
+    "A2Area",
 ]

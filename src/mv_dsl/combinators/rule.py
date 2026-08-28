@@ -1,11 +1,12 @@
 """ClueRule：线索规则的**管道**——Region ∘ Weight ∘ Aggregate ∘ Relation 的组合。
 
 ```python
-V = ClueRule("V", RMoore(), WIdentity(), ASum(), RelationEquals())
+V = ClueRule("V", RStd(), WIdentity(), ASum(), RelationEquals())
 ```
 
-- `value(puzzle, r, c)`：从答案盘计算显示值（fill / 验证）
-- `encode(model, puzzle, r, c, mine_vars, clue_var)`：生成约束
+- `value(puzzle, r, c, direction=0)`：从答案盘计算显示值（fill / 验证）；
+  `direction` 是谜题数据层面的误差方向（L+/L-），仅误差类关系使用
+- `encode(model, puzzle, r, c, mine_vars, clue_var)`：生成约束（玩家视角，不含方向）
 
 求值器与编译器都只依赖这两个方法，保证语义一致。
 **组合规则零额外代码**——新的组合只是换用不同的子类实例。
@@ -31,10 +32,10 @@ class ClueRule:
     aggregate: "Aggregate"
     relation: "Relation"
 
-    def value(self, puzzle, row: int, col: int) -> Any:
+    def value(self, puzzle, row: int, col: int, direction: int = 0) -> Any:
         cells = self.region.cells(puzzle, row, col)
         real = self.aggregate.value(puzzle, row, col, cells, self.weight)
-        return self.relation.display(real)
+        return self.relation.display(real, direction)
 
     def encode(self, model, puzzle, row: int, col: int, mine_vars, clue_var) -> Any:
         cells = self.region.cells(puzzle, row, col)

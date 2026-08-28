@@ -36,11 +36,11 @@ from ..combinators.weight import (
 CLUE_RULES: dict[str, ClueRule] = {
     # --- 线性求和类 ---
     "V": ClueRule("V", RStd(), WIdentity(), ASum(), RelationEquals()),
-    "L+": ClueRule("L+", RStd(), WIdentity(), ASum(), RelationOffset(+1)),
-    "L-": ClueRule("L-", RStd(), WIdentity(), ASum(), RelationOffset(-1)),
+    "L+": ClueRule("L+", RStd(), WIdentity(), ASum(), RelationOffset()),
+    "L-": ClueRule("L-", RStd(), WIdentity(), ASum(), RelationOffset()),
     "M": ClueRule("M", RStd(), WDyeDouble(), ASum(), RelationEquals()),
-    "LM+": ClueRule("LM+", RStd(), WDyeDouble(), ASum(), RelationOffset(+1)),
-    "LM-": ClueRule("LM-", RStd(), WDyeDouble(), ASum(), RelationOffset(-1)),
+    "LM+": ClueRule("LM+", RStd(), WDyeDouble(), ASum(), RelationOffset()),
+    "LM-": ClueRule("LM-", RStd(), WDyeDouble(), ASum(), RelationOffset()),
     "X": ClueRule("X", RCross(), WIdentity(), ASum(), RelationEquals()),
     "X'": ClueRule("X'", RMiniCross(), WIdentity(), ASum(), RelationEquals()),
     "MX": ClueRule("MX", RCross(), WDyeDouble(), ASum(), RelationEquals()),

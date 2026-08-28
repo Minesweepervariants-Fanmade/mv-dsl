@@ -348,7 +348,7 @@ D:\dev\mv\MVDSL\
 │   ├── combinators/            # L2 六类组合子：按类别嵌套，抽象基类 + 具体子类（每子类独立文件）
 │   │   ├── region/
 │   │   │   ├── region.py       #   class Region（抽象基类）
-│   │   │   ├── moore.py        #   class RMoore（3x3 九宫，[V]）
+│   │   │   ├── std.py          #   class RStd（3x3 九宫，[V]）
 │   │   │   ├── knight.py       #   class RKnight（马步 8 格，[K]）
 │   │   │   ├── cross.py        #   class RCross（半径 2 十字，[X]）
 │   │   │   ├── mini_cross.py   #   class RMiniCross（半径 1 十字，[X']）
@@ -371,7 +371,7 @@ D:\dev\mv\MVDSL\
 │   │   ├── relation/
 │   │   │   ├── relation.py     #   class Relation（抽象基类）
 │   │   │   ├── equals.py       #   class RelationEquals（显示 == 真实）
-│   │   │   └── offset.py       #   class RelationOffset（显示 == 真实 ± 1，[L]/[LM]）
+│   │   │   └── offset.py       #   class RelationOffset（显示 == 真实 ± 1，方向未知，[L]/[LM]）
 │   │   ├── constraint/
 │   │   │   └── constraint.py  #   class Constraint（抽象基类，全局规则，后续）
 │   │   ├── sideboard/
@@ -405,11 +405,11 @@ D:\dev\mv\MVDSL\
 
 | 类别 | 抽象基类 | 子类前缀 | 示例 |
 |---|---|---|---|
-| Region | `Region` | `R` | `RMoore` / `RKnight` / `REyesight` |
+| Region | `Region` | `R` | `RStd` / `RKnight` / `REyesight` |
 | Weight | `Weight` | `W` | `WIdentity` / `WDyeDouble` |
-| Aggregate | `Aggregate` | `A` | `ASum` / `AWallSegments` / `AEyesight` |
+| Aggregate | `Aggregate` | `A`（mv2 专属 `A2`） | `ASum` / `AWallSegments` / `A2Area` |
 | Relation | `Relation` | `Relation`（全名避免与 R 冲突） | `RelationEquals` / `RelationOffset` |
-| Global | `Constraint` | `G` | `GQuad` / `GConnected`（后续） |
+| Global | `Constraint` | `C`（mv2 专属 `C2`） | `CQuad` / `CConnected` / `C2Group4` |
 | Sideboard | `Sideboard` | `S` | `SPermutation` / `SErrorMarks`（后续） |
 
 一条规则 = 各组合子具体子类的**管道实例**（`rule.py` 的 `ClueRule`）：

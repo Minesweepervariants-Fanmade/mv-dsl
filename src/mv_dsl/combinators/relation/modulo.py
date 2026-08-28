@@ -18,7 +18,7 @@ class RelationModulo(Relation):
     id = "modulo"
     m: int = 3
 
-    def display(self, real_value: int) -> int:
+    def display(self, real_value: int, direction: int = 0) -> int:
         return real_value % self.m
 
     def apply(self, model, total, clue_var):

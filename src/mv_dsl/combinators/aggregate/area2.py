@@ -1,4 +1,4 @@
-"""AArea：四连通雷区面积之和（[2A] Area）。
+"""A2Area：四连通雷区面积之和（[2A] Area）。
 
 语义（对照官方 `ActiveVerticesConnectedArea(list75, i, j, 1+v)`，mv2 反编译 3864-3910 行）：
 线索格 (i,j) 相邻的四连通雷区面积之和 == 显示值。等价表述：把 (i,j) 强制视为雷，
@@ -45,7 +45,7 @@ class A2Area(Aggregate):
 
     def encode(self, model, puzzle, row, col, cells, weight, mine_vars, clue_var, relation):
         if not isinstance(relation, RelationEquals):
-            raise NotImplementedError("AArea 仅支持 RelationEquals")
+            raise NotImplementedError("A2Area 仅支持 RelationEquals")
         shown = puzzle.cells[row][col].clue.value
         comps = model.extras["components"]  # 由 compiler 预构建
         n = puzzle.width * puzzle.height

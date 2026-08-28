@@ -9,7 +9,7 @@ from .relation import Relation
 class RelationEquals(Relation):
     id = "equals"
 
-    def display(self, real_value: int) -> int:
+    def display(self, real_value: int, direction: int = 0) -> int:
         return real_value
 
     def apply(self, model, total, clue_var):

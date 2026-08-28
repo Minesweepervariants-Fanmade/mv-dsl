@@ -1,4 +1,4 @@
-"""GBalance：平衡（[1B]）——每行每列的雷数相等。
+"""CBalance：平衡（[1B]）——每行每列的雷数相等。
 
 官方要求每行 == 每列 == MineCount / SizeX（需整除）。
 对照官方 BuildMetaConstraints case "[1B]"（mv2 反编译 2382-2425 行）。

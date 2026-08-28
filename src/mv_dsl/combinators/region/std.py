@@ -1,4 +1,4 @@
-"""RMoore：3x3 九宫（[V] Vanilla 及多数线索规则的区域）。"""
+"""RStd：3x3 九宫（[V] Vanilla 及多数线索规则的区域）。"""
 
 from __future__ import annotations
 
