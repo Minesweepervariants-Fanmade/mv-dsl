@@ -372,13 +372,13 @@ D:\dev\mv\MVDSL\
 │   │   │   ├── relation.py     #   class Relation（抽象基类）
 │   │   │   ├── equals.py       #   class RelationEquals（显示 == 真实）
 │   │   │   └── offset.py       #   class RelationOffset（显示 == 真实 ± 1，[L]/[LM]）
-│   │   ├── global_pred/
-│   │   │   └── global_pred.py  #   class GlobalPred（抽象基类，全局规则，后续）
+│   │   ├── constraint/
+│   │   │   └── constraint.py  #   class Constraint（抽象基类，全局规则，后续）
 │   │   ├── sideboard/
 │   │   │   └── sideboard.py    #   class Sideboard（抽象基类，副板，后续）
 │   │   └── rule.py             #   class ClueRule：管道 Region∘Weight∘Aggregate∘Relation
 │   ├── registry/               # L2 规则注册表（数据）
-│   │   ├── rules_mv1.py        #   mv1 规则：id → ClueRule / GlobalPred 实例
+│   │   ├── rules_mv1.py        #   mv1 规则：id → ClueRule / Constraint 实例
 │   │   └── rules_mv2.py        #   mv2 规则（后续）
 │   ├── puzzle/                 # L3 谜题描述
 │   │   ├── model.py            #   Cell / Clue / Puzzle / Sideboard 模型
@@ -409,7 +409,7 @@ D:\dev\mv\MVDSL\
 | Weight | `Weight` | `W` | `WIdentity` / `WDyeDouble` |
 | Aggregate | `Aggregate` | `A` | `ASum` / `AWallSegments` / `AEyesight` |
 | Relation | `Relation` | `Relation`（全名避免与 R 冲突） | `RelationEquals` / `RelationOffset` |
-| Global | `GlobalPred` | `G` | `GQuad` / `GConnected`（后续） |
+| Global | `Constraint` | `G` | `GQuad` / `GConnected`（后续） |
 | Sideboard | `Sideboard` | `S` | `SPermutation` / `SErrorMarks`（后续） |
 
 一条规则 = 各组合子具体子类的**管道实例**（`rule.py` 的 `ClueRule`）：

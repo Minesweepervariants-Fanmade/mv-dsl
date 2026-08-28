@@ -8,7 +8,7 @@
 | Weight | `Weight` | `weight.py` | 每颗雷计入多少 |
 | Aggregate | `Aggregate` | `aggregate.py` | 集合 $\\to$ 数值 |
 | Relation | `Relation` | `relation.py` | 真实值 $\\leftrightarrow$ 显示值 |
-| Global | `GlobalPred` | `global_pred.py` | 整盘布局约束（全局规则） |
+| Global | `Constraint` | `constraint.py` | 整盘布局约束（全局规则） |
 | Sideboard | `Sideboard` | `sideboard.py` | 副板模式（额外变量 + 布局） |
 
 一条线索规则 = `ClueRule`（`rule.py`）管道实例：
