@@ -14,10 +14,13 @@ from .g_zero_sum import GZeroSum
 from .g_flowers import GFlowers
 from .g_triplet_req import GTripletReq
 from .g_connected import GConnected
+from .g_group_area import GGroup4, GGroup3
+from .g_segment import GSegment
 
 __all__ = [
     "Constraint",
     "GQuad", "GTriplet", "GBalance", "GUnary", "GAntiKnight",
     "GHorizontal", "GDual", "GH2", "GT2", "GZeroSum", "GFlowers",
     "GTripletReq", "GConnected",
+    "GGroup4", "GGroup3", "GSegment",
 ]
